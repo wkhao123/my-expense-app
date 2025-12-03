@@ -37,6 +37,7 @@ jobs:
       - name: Build APK
         run: |
           cd android
+          sed -i 's/\r$//' gradlew  <-- 这一行必须有！
           chmod +x gradlew
           ./gradlew assembleDebug
 
