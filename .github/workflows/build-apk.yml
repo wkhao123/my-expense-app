@@ -1,8 +1,8 @@
-name: Build Android APK (Capacitor)
+name: Build Android APK
 
 on:
   push:
-    branches: [ "main" ] # 确保这里是你的主分支名字，截图看是 main
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -11,19 +11,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # 1. 设置 Node.js 环境 (为了编译 React)
+      # 1. 设置 Node.js (必须是 20 或更高)
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'npm'
 
-      # 2. 设置 Java 环境 (为了编译安卓)
+      # 2. 设置 Java (必须是 21)
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '21'
 
-      # 3. 安装依赖并编译网页代码
+      # 3. 安装依赖并编译网页
       - name: Install & Build Web
         run: |
           npm install
@@ -33,17 +32,18 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      # 5. 打包 APK
+      # 5. 打包 APK (包含 Windows 格式修复)
       - name: Build APK
         run: |
           cd android
-          sed -i 's/\r$//' gradlew  <-- 这一行必须有！
+          # 下面这行命令专门修复 Windows 上传导致的报错
+          sed -i 's/\r$//' gradlew
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      # 6. 上传 APK 供下载
+      # 6. 上传生成的 APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: my-expense-app
+          name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
