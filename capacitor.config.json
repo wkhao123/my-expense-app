@@ -1,5 +1,6 @@
 {
-  "appId": "com.example.app",
+  "appId": "com.wk.expense",
   "appName": "记账本",
-  "webDir": "dist"
+  "webDir": "dist", // <--- 必须是 dist，不能是 www
+  "bundledWebRuntime": false
 }
