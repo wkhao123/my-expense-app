@@ -1,6 +1,6 @@
 {
   "appId": "com.wk.expense",
   "appName": "记账本",
-  "webDir": "dist", // <--- 必须是 dist，不能是 www
+  "webDir": "dist",
   "bundledWebRuntime": false
 }
