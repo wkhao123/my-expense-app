@@ -14,7 +14,7 @@ jobs:
       # 1. 设置 Node.js 环境 (为了编译 React)
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: 'npm'
 
       # 2. 设置 Java 环境 (为了编译安卓)
