@@ -1,0 +1,48 @@
+name: Build Android APK (Capacitor)
+
+on:
+  push:
+    branches: [ "main" ] # 确保这里是你的主分支名字，截图看是 main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. 设置 Node.js 环境 (为了编译 React)
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # 2. 设置 Java 环境 (为了编译安卓)
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 3. 安装依赖并编译网页代码
+      - name: Install & Build Web
+        run: |
+          npm install
+          npm run build
+
+      # 4. 同步网页代码到安卓层
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      # 5. 打包 APK
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      # 6. 上传 APK 供下载
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-expense-app
+          path: android/app/build/outputs/apk/debug/app-debug.apk
